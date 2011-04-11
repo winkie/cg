@@ -6,7 +6,7 @@ GlutMaster     * glutMaster;
 DemoWindow     * firstWindow       = 0;
 DemoWindow     * secondWindow      = 0;
 
-void main(void)
+int main()
 {
    glutMaster   = new GlutMaster();    
  
@@ -17,4 +17,5 @@ void main(void)
    
    //firstWindow->StartSpinning(glutMaster);
    glutMaster->CallGlutMainLoop();
+   return 0;
 }
