@@ -14,7 +14,7 @@ solution "lab2"
 
       configuration "windows"
          includedirs {"./glut"}
-         links {"freeglut_static.lib"}
+         links {"freeglut_static"}
          libdirs {"./glut"}
       
       configuration "Debug"
