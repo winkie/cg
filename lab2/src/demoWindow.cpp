@@ -2,16 +2,16 @@
 
 #include "cSphere.h"
 
-DemoWindow::DemoWindow(GlutMaster * glutMaster,
-                       int setWidth, int setHeight,
-                       int setInitPositionX, int setInitPositionY,
-                       char * title)
+const static float fovy = M_PI_4, zNear = 0.1f, zFar = 1000.0f;
+
+DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
+                       int setInitPositionX, int setInitPositionY, const char *title)
 {
    memset(keys, 0, 256 * sizeof(bool));
    mMouseLeft = false;
    mMouseDX = mMouseDY = 0;
-   mCamera.set(Eigen::Vector3f(0, 0, -100), Eigen::Vector3f(0, 0, 0));
-   width  = setWidth;               
+   mCamera.set(Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(0, 0, 1));
+   width = setWidth;
    height = setHeight;
 
    initPositionX = setInitPositionX;
@@ -20,7 +20,7 @@ DemoWindow::DemoWindow(GlutMaster * glutMaster,
    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
    glutInitWindowSize(width, height);
    glutInitWindowPosition(initPositionX, initPositionY);
-   glViewport(0, 0, width, height);   // This may have to be moved to after the next line on some platforms
+   glViewport(0, 0, width, height); // This may have to be moved to after the next line on some platforms
 
    glutMaster->CallGlutCreateWindow(title, this);
 
@@ -40,6 +40,18 @@ DemoWindow::DemoWindow(GlutMaster * glutMaster,
    glClearColor(0, 0, 0, 1.0f);
    glClearDepth(1.0f);
    glColor4f(1.0, 0.0, 0.0, 1.0);
+
+   mRenderer = &mPreviewRenderer;
+   mRenderer->setupProjection(width, height, fovy, zNear, zFar);
+
+   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(1, 0, 0),
+         Eigen::Vector3f(0, 0, 50)));
+   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 0),
+         Eigen::Vector3f(0, 10, 50)));
+   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 0, 1),
+         Eigen::Vector3f(-4, -4, 50)));
+   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 1),
+         Eigen::Vector3f(-4, 10, 50)));
 }
 
 DemoWindow::~DemoWindow()
@@ -49,30 +61,9 @@ DemoWindow::~DemoWindow()
 
 void DemoWindow::CallBackDisplayFunc(void)
 {
-   static cSphere sphere1(3.5f, Eigen::Vector3f(1, 0, 0), Eigen::Vector3f(0, 0, 0));
-   static cSphere sphere2(1.5f, Eigen::Vector3f(0, 1, 0), Eigen::Vector3f(0, 0, 5));
-   static cSphere sphere3(1.0f, Eigen::Vector3f(0, 0, 1), Eigen::Vector3f(-4, -4, 0));
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   mCamera.setupMatrix();
-
-   glPushMatrix();
-   glTranslatef(0, 5, 0);
-   glBegin(GL_TRIANGLES);
-      glColor3f(1.0f,0.0f,0.0f);	      // Red
-      glVertex3f(0.0f, 1.0f, 0.0f);    // Top Of Triangle (Front)
-      glColor3f(0.0f,1.0f,0.0f);       // Green
-      glVertex3f(-1.0f,-1.0f, 0.0f);   // Left Of Triangle (Front)
-      glColor3f(0.0f,0.0f,1.0f);       // Blue
-      glVertex3f(1.0f,-1.0f, 0.0f);    // Right Of Triangle (Front)
-   glEnd();
-   glPopMatrix();
-   
-   sphere1.render();
-   sphere2.render();
-   sphere3.render();
+   mRenderer->render(mCamera, mScene);
 
    glutSwapBuffers();
 }
@@ -80,19 +71,12 @@ void DemoWindow::CallBackDisplayFunc(void)
 void DemoWindow::CallBackReshapeFunc(int w, int h)
 {
    width = w;
-   height= h;
+   height = h;
 
    if (h == 0)
       h = 1;
 
-   glViewport(0, 0, width, height); 
-   
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 1000.0f);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+   mRenderer->setupProjection(w, h, fovy, zNear, zFar);
 
    glutPostRedisplay();
 }
@@ -100,32 +84,36 @@ void DemoWindow::CallBackReshapeFunc(int w, int h)
 void DemoWindow::CallBackKeyboardFunc(unsigned char key, int x, int y)
 {
    keys[key] = true;
-   if (key == 27)   //ESC
+   switch (key)
+   //ESC
    {
-      //glutDestroyWindow(GetWindowID());
+   case 27: //ESC
       glutLeaveMainLoop();
+      break;
+   case 13: //ENTER
+      switchRenderers();
+      break;
    }
 }
 
 void DemoWindow::CallBackIdleFunc(void)
 {
-//   glRotatef(0.25, 1, 1, 2);
    if (mMouseLeft)
       mCamera.rotate(mMouseDX, mMouseDY);
    mMouseDY = mMouseDX = 0;
 
    if (keys['w'])
-      mCamera.move(0.1f);
+      mCamera.move(0.01f);
    if (keys['a'])
-      mCamera.strafe(-0.1f);
+      mCamera.strafe(-0.01f);
    if (keys['s'])
-      mCamera.move(-0.1f);
+      mCamera.move(-0.01f);
    if (keys['d'])
-      mCamera.strafe(0.1f);
+      mCamera.strafe(0.01f);
    glutPostRedisplay();
-}   
+}
 
-void DemoWindow::CallBackMouseFunc( int button, int state, int x, int y )
+void DemoWindow::CallBackMouseFunc(int button, int state, int x, int y)
 {
    if (button == GLUT_LEFT_BUTTON)
    {
@@ -133,27 +121,34 @@ void DemoWindow::CallBackMouseFunc( int button, int state, int x, int y )
    }
 }
 
-void DemoWindow::CallBackMotionFunc( int x, int y )
+void DemoWindow::CallBackMotionFunc(int x, int y)
 {
    mMouseDX = x - mPrevMouseX;
    mMouseDY = y - mPrevMouseY;
    mPrevMouseX = x, mPrevMouseY = y;
 }
 
-void DemoWindow::CallBackPassiveMotionFunc( int x, int y )
+void DemoWindow::CallBackPassiveMotionFunc(int x, int y)
 {
    mMouseDX = x - mPrevMouseX;
    mMouseDY = y - mPrevMouseY;
    mPrevMouseX = x, mPrevMouseY = y;
 }
 
-void DemoWindow::CallBackKeyboardUpFunc( unsigned char key, int x, int y )
+void DemoWindow::CallBackKeyboardUpFunc(unsigned char key, int x, int y)
 {
    keys[key] = false;
 }
 
+void DemoWindow::switchRenderers()
+{
+   if (mRenderer == &mRayTracingRenderer)
+      mRenderer = &mPreviewRenderer;
+   else
+      mRenderer = &mRayTracingRenderer;
 
-
+   mRenderer->setupProjection(width, height, fovy, zNear, zFar);
+}
 
 
 

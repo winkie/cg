@@ -21,5 +21,5 @@ public:
    {
       return mMaterial;
    }
-   ~cMaterialSolid() {};
+   virtual ~cMaterialSolid() {};
 };

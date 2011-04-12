@@ -38,10 +38,10 @@ private:
 
 public:
 
-   GlutMaster();
+   GlutMaster(int argc, char **argv);
    ~GlutMaster();
 
-   void  CallGlutCreateWindow(char * setTitle, GlutWindow * glutWindow);
+   void  CallGlutCreateWindow(const char *setTitle, GlutWindow *glutWindow);
    void  CallGlutMainLoop(void);
 
    void  DisableIdleFunction(void);

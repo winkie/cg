@@ -23,7 +23,7 @@ void cFreeCamera::rotate(int mdx, int mdy)
    float dx = mdx * 0.003f;
    float dy = mdy * 0.003f;
    Eigen::Vector3f cross = mDir.cross(mUp);
-   Eigen::AngleAxisf t(Eigen::AngleAxisf(dy, cross));
+   Eigen::AngleAxisf t(Eigen::AngleAxisf(dy, cross.normalized()));
 
    Eigen::Vector3f newDir = t * mDir, newUp;
    
@@ -31,7 +31,7 @@ void cFreeCamera::rotate(int mdx, int mdy)
       mDir = newDir;
 
    newUp = t * mUp;
-   t = Eigen::AngleAxisf(dx, newUp);
+   t = Eigen::AngleAxisf(dx, newUp.normalized());
    
    mDir = t * mDir;
 }
