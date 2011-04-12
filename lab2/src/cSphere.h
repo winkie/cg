@@ -52,7 +52,7 @@ public:
    }
    virtual Eigen::Vector2f toSurfaceCoords(const Eigen::Vector3f &pos) const
    {
-
+      return Eigen::Vector2f();
    }
 
    virtual ~cSphere() {};

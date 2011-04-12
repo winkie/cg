@@ -15,13 +15,14 @@ cRayTracingRenderer::cRayTracingRenderer()
 void cRayTracingRenderer::setupProjection(int width, int height, float fovy, float zNear, float zFar)
 {
    mWidth = width, mHeight = height;
-
    mFovy = fovy; //mZNear = zNear;
+   glDisable(GL_DEPTH_TEST);
 
    glViewport(0, 0, width, height);
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    gluOrtho2D(0, width, height, 0);
+
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
@@ -44,17 +45,9 @@ void cRayTracingRenderer::render(const cFreeCamera &camera, const cScene &scene)
 //   return;
    if (mReRender)
       renderRays(camera, scene);
-
-   glBegin(GL_POINTS);
-   for (int j = 0; j < mHeight; ++j)
-   {
-      for (int i = 0; i < mWidth; ++i)
-      {
-         glColor3fv(mBuffer[j * mWidth + i].data());
-         glVertex2i(i, j);
-      }
-   }
-   glEnd();
+   
+   glRasterPos2i(0, mHeight - 1);
+   glDrawPixels(mWidth, mHeight, GL_RGB, GL_FLOAT, &mBuffer[0]);
 }
 
 cRayTracingRenderer::~cRayTracingRenderer()
@@ -128,7 +121,7 @@ void cRayTracingRenderer::renderRays(const cFreeCamera &camera, const cScene &sc
          //ray.dir = (camera.getDir() + Vector3f(i - mWidth * 0.5f, j - mHeight * 0.5f, 500).normalized()).normalized();
 
          Vector3f c;
-         mBuffer[j * mWidth + i] = trace(ray, scene);
+         mBuffer[(mHeight - 1 - j) * mWidth + i] = trace(ray, scene);
       }
    }
    mReRender = false;

@@ -36,6 +36,12 @@ void cPreviewRenderer::render(const cFreeCamera &camera, const cScene &scene)
 
 void cPreviewRenderer::setupProjection(int width, int height, float fovy, float zNear, float zFar)
 {
+   glEnable(GL_DEPTH_TEST);
+   glDepthFunc(GL_LEQUAL);
+   glEnable(GL_COLOR_MATERIAL);
+   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+   glCullFace(GL_FRONT_AND_BACK);
+   
    glViewport(0, 0, width, height);
 
    glMatrixMode(GL_PROJECTION);

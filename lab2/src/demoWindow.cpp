@@ -1,5 +1,7 @@
-#include "demoWindow.h"
+#define _USE_MATH_DEFINES
+#include <cmath>
 
+#include "demoWindow.h"
 #include "cSphere.h"
 
 const static float fovy = M_PI_4, zNear = 0.1f, zFar = 1000.0f;
@@ -27,22 +29,13 @@ DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
    glutMaster->SetIdleToCurrentWindow();
    glutMaster->EnableIdleFunction();
    glutIgnoreKeyRepeat(true);
-
-   glEnable(GL_DEPTH_TEST);
-   glDepthFunc(GL_LEQUAL);
-   glEnable(GL_COLOR_MATERIAL);
-   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-   glCullFace(GL_FRONT_AND_BACK);
-
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+   
+   mRenderer = &mPreviewRenderer;
+   mRenderer->setupProjection(width, height, fovy, zNear, zFar);
 
    glClearColor(0, 0, 0, 1.0f);
    glClearDepth(1.0f);
    glColor4f(1.0, 0.0, 0.0, 1.0);
-
-   mRenderer = &mPreviewRenderer;
-   mRenderer->setupProjection(width, height, fovy, zNear, zFar);
 
    mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(1, 0, 0),
          Eigen::Vector3f(0, 0, 50)));
