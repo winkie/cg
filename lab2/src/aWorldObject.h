@@ -23,7 +23,7 @@ public:
    void setupWorld() {glTranslatef(mPos.x(), mPos.y(), mPos.z());}
    void setupMaterial() {glColor3fv(mMaterialGenerator.material(Eigen::Vector2f(0, 0)).mColor.data());}
 
-   virtual std::pair<bool, Eigen::Vector3f> intersect(const cRay &ray) const = 0;
+   virtual std::pair<float, Eigen::Vector3f> intersect(const cRay &ray) const = 0;
    virtual Eigen::Vector2f toSurfaceCoords(const Eigen::Vector3f &pos) const = 0;
    virtual sMaterial getMaterialAt(const Eigen::Vector2f &pos) const
    {return mMaterialGenerator.material(pos);}

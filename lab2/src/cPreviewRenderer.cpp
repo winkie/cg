@@ -34,7 +34,7 @@ void cPreviewRenderer::render(const cFreeCamera &camera, const cScene &scene)
       ((iRenderable*)(*it))->render();
 }
 
-void cPreviewRenderer::setupProjection(int width, int height, float fovy, float zNear, float zFar)
+void cPreviewRenderer::setupProjection(int width, int height, float fovy)
 {
    glEnable(GL_DEPTH_TEST);
    glDepthFunc(GL_LEQUAL);
@@ -46,6 +46,7 @@ void cPreviewRenderer::setupProjection(int width, int height, float fovy, float 
 
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
+   const float zNear = 0.1f, zFar = 1000.0f;
    gluPerspective(fovy * 180.0f / M_PI, (GLfloat)width / (GLfloat)height, zNear, zFar);
 
    glMatrixMode(GL_MODELVIEW);

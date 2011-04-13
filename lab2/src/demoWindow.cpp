@@ -4,7 +4,7 @@
 #include "demoWindow.h"
 #include "cSphere.h"
 
-const static float fovy = M_PI_4, zNear = 0.1f, zFar = 1000.0f;
+const static float fovy = M_PI_4;
 
 DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
                        int setInitPositionX, int setInitPositionY, const char *title)
@@ -31,7 +31,7 @@ DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
    glutIgnoreKeyRepeat(true);
    
    mRenderer = &mPreviewRenderer;
-   mRenderer->setupProjection(width, height, fovy, zNear, zFar);
+   mRenderer->setupProjection(width, height, fovy);
 
    glClearColor(0, 0, 0, 1.0f);
    glClearDepth(1.0f);
@@ -69,7 +69,7 @@ void DemoWindow::CallBackReshapeFunc(int w, int h)
    if (h == 0)
       h = 1;
 
-   mRenderer->setupProjection(w, h, fovy, zNear, zFar);
+   mRenderer->setupProjection(w, h, fovy);
 
    glutPostRedisplay();
 }
@@ -140,7 +140,7 @@ void DemoWindow::switchRenderers()
    else
       mRenderer = &mRayTracingRenderer;
 
-   mRenderer->setupProjection(width, height, fovy, zNear, zFar);
+   mRenderer->setupProjection(width, height, fovy);
 }
 
 

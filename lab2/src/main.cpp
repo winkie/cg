@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 {
    glutMaster = new GlutMaster(argc, argv);
 
-   firstWindow = new DemoWindow(glutMaster, 500, 500, // height, width
+   firstWindow = new DemoWindow(glutMaster, 700, 700, // height, width
          300, 100, // initPosition (x,y)
          "First Window"); // title
 
