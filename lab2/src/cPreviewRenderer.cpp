@@ -5,6 +5,8 @@
 #include "cFreeCamera.h"
 #include "cScene.h"
 #include "cSphere.h"
+#include "iLight.h"
+
 
 cPreviewRenderer::cPreviewRenderer()
 {
@@ -13,6 +15,9 @@ cPreviewRenderer::cPreviewRenderer()
 
 void cPreviewRenderer::render(const cFreeCamera &camera, const cScene &scene)
 {
+   //glClearColor((GLclampf)scene.mBackground(0), (GLclampf)scene.mBackground(1),
+   //      (GLclampf)scene.mBackground(2), 1.0f);
+   glClearColor(0, 0, 0, 1);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    camera.setupMatrix();
@@ -32,6 +37,17 @@ void cPreviewRenderer::render(const cFreeCamera &camera, const cScene &scene)
    for (cScene::tObjects::const_iterator it = scene.mObjects.begin();
          it != scene.mObjects.end(); ++it)
       ((iRenderable*)(*it))->render();
+
+   for (cScene::tLights::const_iterator it = scene.mLights.begin();
+         it != scene.mLights.end(); ++it)
+   {
+      glPushMatrix();
+      Eigen::Vector3f pos = (*it)->pos;
+      glTranslatef((GLfloat)pos.x(), (GLfloat)pos.y(), (GLfloat)pos.z());
+      glColor3fv((*it)->color.data());
+      glutSolidCube(1);
+      glPopMatrix();
+   }
 }
 
 void cPreviewRenderer::setupProjection(int width, int height, float fovy)

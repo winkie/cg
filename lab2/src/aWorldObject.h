@@ -10,23 +10,29 @@ class aWorldObject
 {
 protected:
    Eigen::Vector3f mPos;
-   const iMaterialGenerator &mMaterialGenerator;
 public:
-   aWorldObject() : mPos(0, 0, 0), mMaterialGenerator(*(new cMaterialSolid(Eigen::Vector3f(1, 0, 0)))) {};
-   aWorldObject(const Eigen::Vector3f &color, 
-                float x, float y, float z) : mPos(x, y, z),
-                mMaterialGenerator(*(new cMaterialSolid(color)))
+   sMaterial mDefMaterial;
+   aWorldObject() : mPos(0, 0, 0) {};
+   aWorldObject(const sMaterial &mat,
+                float x, float y, float z) : mPos(x, y, z), mDefMaterial(mat)
                 {};
-   aWorldObject(const Eigen::Vector3f &color, const Eigen::Vector3f &p) :
-      mPos(p), mMaterialGenerator(*(new cMaterialSolid(color))) {};
+   aWorldObject(const sMaterial &mat, const Eigen::Vector3f &p) :
+      mPos(p), mDefMaterial(mat) {};
 
-   void setupWorld() {glTranslatef(mPos.x(), mPos.y(), mPos.z());}
-   void setupMaterial() {glColor3fv(mMaterialGenerator.material(Eigen::Vector2f(0, 0)).mColor.data());}
+   void setupWorld() {glTranslatef((GLfloat)mPos(0), (GLfloat)mPos(1), (GLfloat)mPos(2));}
+   void setupMaterial() {glColor3fv(mDefMaterial.mColor.data());}
 
-   virtual std::pair<float, Eigen::Vector3f> intersect(const cRay &ray) const = 0;
-   virtual Eigen::Vector2f toSurfaceCoords(const Eigen::Vector3f &pos) const = 0;
-   virtual sMaterial getMaterialAt(const Eigen::Vector2f &pos) const
-   {return mMaterialGenerator.material(pos);}
+   virtual float intersect(const cRay &ray) const = 0;
+
+   virtual Eigen::Vector3f normal(const Eigen::Vector3f &p) const = 0;
+
+   sMaterial getMaterialAt(const Eigen::Vector3f &p) const
+   {
+      sMaterial mat = mDefMaterial;
+      mat.mNormal = normal(p);
+      return mat;
+   }
+
 
    //sMaterial &material() {return mMaterial;}
    //const sMaterial &material() const {return mMaterial;}

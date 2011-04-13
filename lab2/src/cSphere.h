@@ -11,10 +11,10 @@ class cSphere: public aWorldObject, public iRenderable
 private:
    float mRadius;
 public:
-   cSphere(float radius, const Eigen::Vector3f &color) : mRadius(radius),
-      aWorldObject(color, Eigen::Vector3f(0, 0, 0)) {};
-   cSphere(float radius, const Eigen::Vector3f &color, 
-      const Eigen::Vector3f &pos) : aWorldObject(color, pos), mRadius(radius) {};
+   cSphere(float radius, const sMaterial &mat) : mRadius(radius),
+      aWorldObject(mat, Eigen::Vector3f(0, 0, 0)) {};
+   cSphere(float radius, const sMaterial &mat,
+      const Eigen::Vector3f &pos) : aWorldObject(mat, pos), mRadius(radius) {};
 
    void render()
    {
@@ -25,34 +25,36 @@ public:
       glPopMatrix();
    }
 
-   virtual std::pair<float, Eigen::Vector3f> intersect(const cRay &ray) const
+   virtual float intersect(const cRay &ray) const
    {
       Eigen::Vector3f pos = mPos - ray.orig;
       float t = pow(ray.dir.dot(pos), 2) - pos.dot(pos) + mRadius * mRadius;
       if (t < 0)
       {
-         return std::make_pair(-1, Eigen::Vector3f());
+         return -1;
       }
       else if (t < 1e-6)
       {
          float d = ray.dir.dot(pos);
-         return std::make_pair(d, d * ray.dir + ray.orig);
+         return d;
       }
       else
       {
          float d = ray.dir.dot(pos);
          t = sqrt(t);
          if (d - t > 0)
-            return std::make_pair(d - t, (d - t) * ray.dir + ray.orig);
+            return d - t;
          else if (d + t > 0)
-            return std::make_pair(d + t, (d + t) * ray.dir + ray.orig);
+            return d + t;
          else
-            return std::make_pair(-1, Eigen::Vector3f());
+            return -1;
       }
    }
-   virtual Eigen::Vector2f toSurfaceCoords(const Eigen::Vector3f &pos) const
+
+   Eigen::Vector3f normal(const Eigen::Vector3f &p) const
    {
-      return Eigen::Vector2f();
+      Eigen::Vector3f t = p - mPos;
+      return t / mRadius;
    }
 
    virtual ~cSphere() {};

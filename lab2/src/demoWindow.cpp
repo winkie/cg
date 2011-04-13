@@ -3,6 +3,7 @@
 
 #include "demoWindow.h"
 #include "cSphere.h"
+#include "cPointLight.h"
 
 const static float fovy = M_PI_4;
 
@@ -33,18 +34,30 @@ DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
    mRenderer = &mPreviewRenderer;
    mRenderer->setupProjection(width, height, fovy);
 
-   glClearColor(0, 0, 0, 1.0f);
    glClearDepth(1.0f);
    glColor4f(1.0, 0.0, 0.0, 1.0);
 
-   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(1, 0, 0),
+   sMaterial mat(Eigen::Vector3f(1, 0, 0));
+   mat.mKAmbi = 0.2;
+   mat.mKDiff = 0.5;
+   mat.mKSpec = 0.7;
+   mat.mKRefl = 1;
+   //mat.mMedium = cRayTracer::mGlass;
+   mScene.addLight(new cPointLight(Eigen::Vector3f(0, 0, 1),
+         Eigen::Vector3f(-5, 10, 60), 15));
+   mScene.addLight(new cPointLight(Eigen::Vector3f(0, 1, 0),
+         Eigen::Vector3f(5, 10, 60), 15));
+
+   mScene.addObject(new cSphere(1.5f, mat,
          Eigen::Vector3f(0, 0, 50)));
-   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 0),
-         Eigen::Vector3f(0, 10, 50)));
-   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 0, 1),
-         Eigen::Vector3f(-4, -4, 50)));
-   mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 1),
-         Eigen::Vector3f(-4, 10, 50)));
+   //mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 0),
+   //      Eigen::Vector3f(0, 10, 50)));
+   //mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 0, 1),
+   //      Eigen::Vector3f(-4, -4, 50)));
+   //mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 1),
+   //      Eigen::Vector3f(-4, 10, 50)));
+
+   mScene.setBackground(0.3f, 0.3f, 0.3f);
 }
 
 DemoWindow::~DemoWindow()

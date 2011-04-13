@@ -63,7 +63,7 @@ void cRayTracingRenderer::traceRays(const cFreeCamera &camera, const cScene &sce
       {
          ray.dir = (dir * d - 0.5f * (2 * i + 1 - mWidth) * Vx + 0.5f * (2 * j + 1 - mHeight) * Vy).normalized();
 
-         mBuffer[j * mWidth + i] = mRayTracer.trace(ray);
+         mBuffer[j * mWidth + i] = mRayTracer.trace(ray, cRayTracer::mAir, 1);
       }
    }
    mReRender = false;

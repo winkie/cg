@@ -1,20 +1,30 @@
 #pragma once
 
 #include <vector>
+#include <Eigen/Core>
 #include "cSphere.h"
+
+class iLight;
 
 class cScene
 {
 public:
    cScene();
    virtual ~cScene();
-   void addObject(const cSphere *object);
 
+   Eigen::Vector3f mBackground;
+   void setBackground(float r, float g, float b)
+   {
+      mBackground = Eigen::Vector3f(r, g, b);
+   }
+
+   void addObject(const cSphere *object);
    typedef std::vector<const cSphere*> tObjects;
    tObjects mObjects;
 
-   //void addLight();
-
-   typedef std::vector<int /*Lights*/> tLights;
+   void addLight(const iLight *light);
+   typedef std::vector<const iLight*> tLights;
    tLights mLights;
+
+   std::pair<const aWorldObject *, float> intersect(const cRay &ray, float maxD) const;
 };

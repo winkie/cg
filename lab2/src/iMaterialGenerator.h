@@ -17,6 +17,7 @@ private:
    sMaterial mMaterial;
 public:
    cMaterialSolid(const Eigen::Vector3f &color): mMaterial(color) {};
+   cMaterialSolid(sMaterial mat): mMaterial(mat) {};
    sMaterial material(const Eigen::Vector2f &pos) const
    {
       return mMaterial;
