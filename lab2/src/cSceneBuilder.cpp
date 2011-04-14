@@ -137,8 +137,12 @@ cScene * cSceneBuilder::scene3()
    planeMat.mKSpec = 0.4f;
    planeMat.mKDiff = 0.5f;
    //planeMat.mKRefl = 0.4f;
+   planeMat.mColor = Eigen::Vector3f(0.3f, 0.7f, 0.2f);
    planeMat.mMedium = cRayTracer::mGlass;
    scene->addObject(new cCheckersPlane(Eigen::Vector3f(0, 1, 0), 1, planeMat));
+
+   planeMat.mColor = Eigen::Vector3f(0.5f, 0.1f, 0.4f);
+   scene->addObject(new cCheckersPlane(Eigen::Vector3f(0, 0, -1), 300, planeMat));
 
    scene->addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
       Eigen::Vector3f(10, 1, 7), 17));

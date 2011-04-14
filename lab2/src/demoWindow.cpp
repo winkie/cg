@@ -74,7 +74,6 @@ void DemoWindow::CallBackDisplayFunc(void)
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    mRenderer->render(mCamera, *mScenes[mCurScene]);
-   glutSetWindowTitle(mRenderer->titleInfo().c_str());
 
    glutSwapBuffers();
 }
@@ -110,6 +109,7 @@ void DemoWindow::CallBackKeyboardFunc(unsigned char key, int x, int y)
       if (key == ' ')
       {
          mRayTracingRenderer.changeMode();
+         glutSetWindowTitle(mRenderer->titleInfo().c_str());
          glutPostRedisplay();
       }
       return;
@@ -146,8 +146,6 @@ void DemoWindow::CallBackIdleFunc(void)
 
 void DemoWindow::CallBackMouseFunc(int button, int state, int x, int y)
 {
-   if (mState == RAY_TRACER)
-      return;
    if (button == GLUT_LEFT_BUTTON)
    {
       mMouseLeft = (state == GLUT_DOWN);
@@ -182,6 +180,7 @@ void DemoWindow::switchRenderers()
    else
       mRenderer = &mRayTracingRenderer, mState = RAY_TRACER;
 
+   glutSetWindowTitle(mRenderer->titleInfo().c_str());
    mRenderer->setupProjection(width, height, fovy);
 }
 

@@ -62,11 +62,11 @@ void cPlane::render() const
       Eigen::Vector3f v(10, 10, 10);
       int i = -1;
       float m = 0;
-      if (mNormal.x() > 1e-6f)
+      if (fabs(mNormal.x()) > 1e-6f)
          i = 0;
-      else if (mNormal.y() > 1e-6f)
+      else if (fabs(mNormal.y()) > 1e-6f)
          i = 1;
-      else if (mNormal.z() > 1e-6f)
+      else if (fabs(mNormal.z()) > 1e-6f)
          i = 2;
          
       m = mNormal(i), v(i) = 0;
@@ -122,9 +122,10 @@ cCheckersPlane::cCheckersPlane(float a, float b, float c, float d,
 
 }
 
-void cCheckersPlane::applyTexture(const Eigen::Vector3f &p,
+void cCheckersPlane::applyTexture(const Eigen::Vector3f &pp,
    sMaterial &mat) const
 {
+   Eigen::Vector3f p = pp;
    int ix = (int)floor(p.x() + 0.01f);
    int iy = (int)floor(p.y() + 0.01f);
    int iz = (int)floor(p.z() + 0.01f);

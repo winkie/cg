@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cstdio>
 
 #include "iRenderer.h"
 #include "cRayTracer.h"

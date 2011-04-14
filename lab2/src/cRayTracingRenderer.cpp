@@ -16,9 +16,9 @@ static float Random(float l = 0, float r = 1)
 
 cRayTracingRenderer::cRayTracingRenderer()
 {
-   mMode = SIMPLE;
-   mApertureSize = 0.4f;
-   mFocalLength = 25.0f * 30;
+   mMode = DOF;
+   mApertureSize = 0.5f;
+   mFocalLength = 30.0f;
    puts("Cons");
    mReRender = true;
 }
@@ -32,6 +32,7 @@ void cRayTracingRenderer::setupProjection(int width, int height, float fovy)
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    gluOrtho2D(0, width, height, 0);
+
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
@@ -99,7 +100,7 @@ void cRayTracingRenderer::traceRaysDoF(const cFreeCamera &camera, const cScene &
    mReRender = false;
    calcVectors(camera);
 
-   const int Ny = 5, Nx = 5;
+   const int Ny = 7, Nx = 7;
    const float dW = 1.0f / Nx, dH = 1.0f / Ny;
    const float dWA = mApertureSize / Nx, dHA = mApertureSize / Ny;
 
@@ -128,7 +129,7 @@ void cRayTracingRenderer::traceRaysDoF(const cFreeCamera &camera, const cScene &
                Eigen::Vector3f a = -
                   (Random(k * dWA, (k + 1) * dWA) - mApertureSize * 0.5f) * Vx +
                   (Random(l * dHA, (l + 1) * dHA) - mApertureSize * 0.5f) * Vy;
-               ray.orig = mEye;// + a;
+               ray.orig = mEye + a;
                ray.dir = (p * len2 - (g + a)).normalized();
 
                color += mRayTracer.trace(ray, cRayTracer::mAir, 1);
