@@ -19,8 +19,8 @@ struct sMaterial
    Eigen::Vector3f mNormal;
 
    sMaterial(const Eigen::Vector3f &color = Eigen::Vector3f(0, 0, 1),
-             float kAmbi = 0.2, float kDiff = 0.2, float kSpec = 0.2, double kRefl = 0,
-             float kTransp = 0, float refraction = 1,
+             float kAmbi = 0.2f, float kDiff = 0.2f, float kSpec = 0.2f,
+             float kRefl = 0, float kTransp = 0, float refraction = 1,
              float beta = 0, int p = 5)
       : mP(p), mColor(color), mKAmbi(kAmbi), mKDiff(kDiff), mKSpec(kSpec),
       mKRefl(kRefl), mKTransp(kTransp), mMedium(refraction, beta) {};

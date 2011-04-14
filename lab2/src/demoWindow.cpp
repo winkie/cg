@@ -6,7 +6,7 @@
 #include "cPointLight.h"
 #include "cSceneBuilder.h"
 
-const static float fovy = M_PI_4;
+const static float fovy = (float)M_PI_4;
 
 DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
                        int setInitPositionX, int setInitPositionY, const char *title)

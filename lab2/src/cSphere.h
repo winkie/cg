@@ -27,59 +27,36 @@ public:
 
    virtual float intersect(const cRay &ray) const
    {
-      /*Eigen::Vector3f pos = mPos - ray.orig;
-      float t = pow(ray.dir.dot(pos), 2) - pos.dot(pos) + mRadius * mRadius;
-      if (t < 0)
-      {
+      Eigen::Vector3f l = mPos - ray.orig;
+      float L2OC = l.dot(l); // squared distance
+      float tca = l.dot(ray.dir); // closest dist to center
+      float t2hc = mRadius * mRadius - L2OC + tca * tca;
+      float t2;
+  
+      if (t2hc <= 0.0)
          return -1;
-      }
-      else if (t < 1e-6)
-      {
-         float d = ray.dir.dot(pos);
-         return d;
-      }
-      else
-      {
-         float d = ray.dir.dot(pos);
-         t = sqrt(t);
-         if (d - t > 0)
-            return d - t;
-         else if (d + t > 0)
-            return d + t;
-         else
-            return -1;
-      }*/
-   
-   Eigen::Vector3f l = mPos - ray.orig;
-   double const L2OC = l.dot(l); // squared distance
-   double const tca = l.dot(ray.dir); // closest dist to center
-   double t2hc = mRadius * mRadius - L2OC + tca * tca;
-   double t2;
   
-   if (t2hc <= 0.0)
-      return -1;
-  
-   t2hc = sqrt(t2hc);
+      t2hc = sqrt(t2hc);
  
-   double t;
-   if (tca < t2hc) // we are inside
-   {
-      t = tca + t2hc;
-      t2 = tca - t2hc;
-   }
-   else // we are outside
-   {
-      t = tca - t2hc;
-      t2 = tca + t2hc;
-   }
+      float t;
+      if (tca < t2hc) // we are inside
+      {
+         t = tca + t2hc;
+         t2 = tca - t2hc;
+      }
+      else // we are outside
+      {
+         t = tca - t2hc;
+         t2 = tca + t2hc;
+      }
   
-   if (fabs(t) < 0.001) //GeomThreshold
-      t = t2;
+      if (fabs(t) < 0.001f) //GeomThreshold
+         t = t2;
   
-   if (t > 0.001)
-      return t;
-   else
-      return -1;
+      if (t > 0.001f)
+         return t;
+      else
+         return -1;
    }
 
    Eigen::Vector3f normal(const Eigen::Vector3f &p) const

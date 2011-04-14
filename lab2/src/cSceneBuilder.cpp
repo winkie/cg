@@ -23,7 +23,7 @@ cScene* cSceneBuilder::scene1()
    {
       for (j = 0; j < 4; j++, k++)
       {
-         s[k] = new cSphere(0.7f, Eigen::Vector3f(-3 + j * 2, 2.15f - i * 1.45f, 5));
+         s[k] = new cSphere(0.7f, Eigen::Vector3f(-3 + j * 2.0f, 2.15f - i * 1.45f, 5.0f));
 
          if (i > 0)
             s[k]->mDefMaterial.mKAmbi = 0.2f;
@@ -97,6 +97,8 @@ cScene* cSceneBuilder::scene2()
    planeMat.mKSpec = 0.4f;
    planeMat.mKDiff = 0.5f;
    planeMat.mKRefl = 0.4f;
+   planeMat.mKTransp = 0.4f;
+   planeMat.mMedium = cRayTracer::mGlass;
    scene->addObject(s1);
    scene->addObject(s2);
    scene->addObject(s3);

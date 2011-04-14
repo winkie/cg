@@ -46,8 +46,8 @@ Eigen::Vector3f cRayTracer::shade(const sMaterial::sMedium &curMed, double weigh
    sMaterial txt;
    cRay ray;
    Vector3f color(0, 0, 0), l, h;
-   double Sh;
-   double ln, vn;
+   float Sh;
+   float ln, vn;
 
    int Entering = 1;
 
@@ -97,9 +97,9 @@ Eigen::Vector3f cRayTracer::shade(const sMaterial::sMedium &curMed, double weigh
 
    if (tWeight > mThreshold && mLevel < mMaxLevels)
    {
-      double Eta = curMed.mRefraction / (Entering?txt.mMedium.mRefraction:mAir.mRefraction);
-      double ci = -vn;
-      double ctSq = 1 + Eta * Eta * (ci * ci - 1);
+      float Eta = curMed.mRefraction / (Entering?txt.mMedium.mRefraction:mAir.mRefraction);
+      float ci = -vn;
+      float ctSq = 1 + Eta * Eta * (ci * ci - 1);
       if (ctSq > mThreshold)
       {
          ray.dir = view * Eta + txt.mNormal * (Eta * ci - sqrt(ctSq));
