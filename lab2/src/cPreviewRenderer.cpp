@@ -36,7 +36,7 @@ void cPreviewRenderer::render(const cFreeCamera &camera, const cScene &scene)
 
    for (cScene::tObjects::const_iterator it = scene.mObjects.begin();
          it != scene.mObjects.end(); ++it)
-      ((iRenderable*)(*it))->render();
+      (*it)->render();
 
    for (cScene::tLights::const_iterator it = scene.mLights.begin();
          it != scene.mLights.end(); ++it)

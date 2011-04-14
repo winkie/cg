@@ -5,14 +5,14 @@
 #include "cScene.h"
 #include "aWorldObject.h"
 
-double cPointLight::Shadow(const cScene &scene, const Eigen::Vector3f &p, Eigen::Vector3f &l) const
+float cPointLight::Shadow(const cScene &scene, const Eigen::Vector3f &p, Eigen::Vector3f &l) const
 {
    l = pos - p;
 
-   double Dist = l.norm(); // distance to light source
-   double attenuation = DistScale / Dist; // distance attenuation of light
+   float Dist = l.norm();
+   float attenuation = DistScale / Dist;
 
-   l /= Dist; // Normalize vector l
+   l /= Dist;
 
    cRay ray(l, p); // shadow ray
    sMaterial Texture;
@@ -22,9 +22,7 @@ double cPointLight::Shadow(const cScene &scene, const Eigen::Vector3f &p, Eigen:
    for (std::pair<const aWorldObject *, float> occlude = scene.intersect(ray, Dist);
          occlude.first && occlude.second < Dist;
          occlude = scene.intersect(ray, Dist))
-   { // adjust ray origin and get transparency coefficient
-      if (occlude.second < cRayTracer::mThreshold) //TODO:Shit right there
-         break;
+   { 
       ray.orig = ray.point(occlude.second);
       Texture = occlude.first->getMaterialAt(ray.orig);
 

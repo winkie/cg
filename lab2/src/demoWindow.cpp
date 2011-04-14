@@ -4,12 +4,15 @@
 #include "demoWindow.h"
 #include "cSphere.h"
 #include "cPointLight.h"
+#include "cSceneBuilder.h"
 
 const static float fovy = M_PI_4;
 
 DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
                        int setInitPositionX, int setInitPositionY, const char *title)
 {
+   mCurScene = 0;
+   memset(mScenes, 0, 9 * sizeof(cScene*));
    memset(keys, 0, 256 * sizeof(bool));
    mMouseLeft = false;
    mMouseDX = mMouseDY = 0;
@@ -37,50 +40,8 @@ DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
    glClearDepth(1.0f);
    glColor4f(1.0, 0.0, 0.0, 1.0);
 
-   cSphere *s[16];
-   int i, j, k;
-   for (i = k = 0; i < 4; i++)
-   {
-      for (j = 0; j < 4; j++, k++)
-      {
-         s[k] = new cSphere(0.7f, Eigen::Vector3f(-3 + j * 2,
-            2.15f - i * 1.45, 5));
-
-         if (i > 0)
-            s[k]->mDefMaterial.mKAmbi = 0.2;
-         else
-            s[k]->mDefMaterial.mKAmbi = j * 0.33;
-
-         if (i < 1)
-            s[k]->mDefMaterial.mKDiff = 0;
-         else if (i == 1)
-            s[k]->mDefMaterial.mKDiff = j * 0.33;
-         else
-            s[k]->mDefMaterial.mKDiff = 0.4;
-
-         if (i < 2)
-            s[k]->mDefMaterial.mKSpec = 0;
-         else if (i == 2)
-            s[k]->mDefMaterial.mKSpec = j * 0.33;
-         else
-            s[k]->mDefMaterial.mKSpec = 0.7;
-
-         if (i < 3)
-            s[k]->mDefMaterial.mP = 10;
-         else
-            s[k]->mDefMaterial.mP = 5 + 5 * j;
-
-         s[k]->mDefMaterial.mKTransp = 0;
-         s[k]->mDefMaterial.mKRefl = 0;
-         s[k]->mDefMaterial.mColor = Eigen::Vector3f(0, 1, 0);
-         s[k]->mDefMaterial.mMedium.mRefraction = 1;
-         s[k]->mDefMaterial.mMedium.mBeta = 0;
-         mScene.addObject(s[k]);
-      }
-   }
-
-   mScene.addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
-         Eigen::Vector3f(10, 5, -10), 15));
+   //mScene.addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
+   //      Eigen::Vector3f(10, 5, -10), 15));
    //mScene.addLight(new cPointLight(Eigen::Vector3f(0, 1, 0),
    //      Eigen::Vector3f(5, 10, 60), 15));
 
@@ -93,7 +54,10 @@ DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
    //mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 1),
    //      Eigen::Vector3f(-4, 10, 50)));
 
-   mScene.setBackground(0.3f, 0.3f, 0.3f);
+   //mScene.setBackground(0.3f, 0.3f, 0.3f);
+   
+   mScenes[0] = cSceneBuilder::scene1();
+   mScenes[1] = cSceneBuilder::scene2();
 }
 
 DemoWindow::~DemoWindow()
@@ -105,7 +69,7 @@ void DemoWindow::CallBackDisplayFunc(void)
 {
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   mRenderer->render(mCamera, mScene);
+   mRenderer->render(mCamera, *mScenes[mCurScene]);
 
    glutSwapBuffers();
 }
@@ -125,17 +89,23 @@ void DemoWindow::CallBackReshapeFunc(int w, int h)
 
 void DemoWindow::CallBackKeyboardFunc(unsigned char key, int x, int y)
 {
-   keys[key] = true;
+   if (key >= '1' && key <= '9')
+   {
+      if (mScenes[key - '1'])
+         mCurScene = key - '1';
+   }
+   
    switch (key)
-   //ESC
    {
    case 27: //ESC
       glutLeaveMainLoop();
-      break;
+      return;
    case 13: //ENTER
       switchRenderers();
-      break;
+      return;
    }
+   
+   keys[key] = true;
 }
 
 void DemoWindow::CallBackIdleFunc(void)

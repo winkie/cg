@@ -14,7 +14,8 @@ private:
    cRayTracingRenderer mRayTracingRenderer;
    iRenderer *mRenderer;
    cFreeCamera mCamera;
-   cScene mScene;
+   cScene *mScenes[9];
+   int mCurScene;
    bool mMouseLeft;
    int mMouseDX;
    int mPrevMouseX;

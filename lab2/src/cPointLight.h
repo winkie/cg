@@ -5,12 +5,11 @@
 class cPointLight: public iLight
 {
 public:
+   float DistScale;
 
-   double DistScale;
-
-   cPointLight(const Eigen::Vector3f &c, const Eigen::Vector3f &p, double d = 1.0): iLight(c, p), DistScale(d)
+   cPointLight(const Eigen::Vector3f &c, const Eigen::Vector3f &p, float d = 1.0f): iLight(c, p), DistScale(d)
    {
    }
 
-   virtual double Shadow(const cScene &scene, const Eigen::Vector3f &p, Eigen::Vector3f &l) const;
+   virtual float Shadow(const cScene &scene, const Eigen::Vector3f &p, Eigen::Vector3f &l) const;
 };

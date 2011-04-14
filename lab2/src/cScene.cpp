@@ -1,4 +1,5 @@
 #include "cScene.h"
+#include "iLight.h"
 
 cScene::cScene()
 {
@@ -9,9 +10,11 @@ cScene::~cScene()
 {
    for (tObjects::const_iterator it = mObjects.begin(); it != mObjects.end(); ++it)
       delete *it;
+   for (tLights::const_iterator it = mLights.begin(); it != mLights.end(); ++it)
+      delete *it;
 }
 
-void cScene::addObject(const cSphere *object)
+void cScene::addObject(const aWorldObject *object)
 {
    mObjects.push_back(object);
 }

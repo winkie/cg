@@ -18,8 +18,8 @@ public:
       mBackground = Eigen::Vector3f(r, g, b);
    }
 
-   void addObject(const cSphere *object);
-   typedef std::vector<const cSphere*> tObjects;
+   void addObject(const aWorldObject *object);
+   typedef std::vector<const aWorldObject*> tObjects;
    tObjects mObjects;
 
    void addLight(const iLight *light);
