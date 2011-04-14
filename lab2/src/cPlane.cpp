@@ -50,6 +50,8 @@ float cPlane::intersect(const cRay &ray) const
       return -1;
 }
 
+
+
 void cPlane::render() const
 {
    glPushMatrix();
@@ -96,3 +98,37 @@ void cPlane::render() const
    glPopMatrix();
 }
 
+
+cCheckersPlane::cCheckersPlane(const Eigen::Vector3f &n, float d): cPlane(n, d)
+{
+
+}
+
+cCheckersPlane::cCheckersPlane(const Eigen::Vector3f &n, float d,
+   const sMaterial &mat): cPlane(n, d, mat)
+{
+
+}
+
+cCheckersPlane::cCheckersPlane(float a, float b, float c, float d):
+   cPlane(a, b, c, d)
+{
+
+}
+
+cCheckersPlane::cCheckersPlane(float a, float b, float c, float d,
+   const sMaterial &mat): cPlane(a, b, c, d, mat)
+{
+
+}
+
+void cCheckersPlane::applyTexture(const Eigen::Vector3f &p,
+   sMaterial &mat) const
+{
+   int ix = (int)floor(p.x() + 0.01f);
+   int iy = (int)floor(p.y() + 0.01f);
+   int iz = (int)floor(p.z() + 0.01f);
+
+   if ((ix + iy + iz) & 1)
+      mat.mColor = Eigen::Vector3f(1, 1, 1);
+}

@@ -27,6 +27,7 @@ public:
       return mat;
    }
 
+   virtual void applyTexture(const Eigen::Vector3f &p, sMaterial &mat) const {}
    //sMaterial &material() {return mMaterial;}
    //const sMaterial &material() const {return mMaterial;}
 

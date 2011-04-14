@@ -88,20 +88,20 @@ cScene* cSceneBuilder::scene2()
    s2 = new cSphere(1, Eigen::Vector3f(-3, 0, 4), sphereMat);
    s2->mDefMaterial.mColor = Eigen::Vector3f(1, 0, 0);
    
-   s3 = new cSphere(1, Eigen::Vector3f(3, 0, 4), sphereMat);
-   s3->mDefMaterial.mColor = Eigen::Vector3f(0, 1, 0);
-   s3->mDefMaterial.mKTransp = 0.7f;
-   
+   s3 = new cSphere(1, Eigen::Vector3f(3, 0, 4), sMaterial(
+      Eigen::Vector3f(1, 1, 1),
+      0, 0, 0, 0, 1, 1.5f, 0, 30));
+
+   scene->addObject(s1);
+   scene->addObject(s2);
+   scene->addObject(s3);
+
    sMaterial planeMat;
    planeMat.mKAmbi = 0.1f;
    planeMat.mKSpec = 0.4f;
    planeMat.mKDiff = 0.5f;
    planeMat.mKRefl = 0.4f;
-   planeMat.mKTransp = 0.4f;
    planeMat.mMedium = cRayTracer::mGlass;
-   scene->addObject(s1);
-   scene->addObject(s2);
-   scene->addObject(s3);
    scene->addObject(new cPlane(Eigen::Vector3f(0, 1, 0), 1, planeMat));
    
    scene->addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
@@ -109,5 +109,42 @@ cScene* cSceneBuilder::scene2()
          
    scene->setBackground(0.3f, 0.3f, 0.3f);
    
+   return scene;
+}
+
+cScene * cSceneBuilder::scene3()
+{
+   cScene *scene = new cScene();
+
+   sMaterial sphereMat;
+   sphereMat.mKAmbi = 0.2f;
+   sphereMat.mKDiff = 0.5f;
+   sphereMat.mKSpec = 0.4f;
+   sphereMat.mKRefl = 0.5f;
+   sphereMat.mKTransp = 0;
+   sphereMat.mP = 30;
+   sphereMat.mColor = Eigen::Vector3f(1, 1, 0);
+   sphereMat.mMedium = cRayTracer::mGlass;
+
+   for (int i = 0; i < 10; i++)
+   {
+      sphereMat.mColor = Eigen::Vector3f(i * 0.1f, i * 0.03f + 0.3f, i * 0.04f + 0.5f);
+      scene->addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, i * 7 + 5), sphereMat));
+   }
+
+   sMaterial planeMat;
+   planeMat.mKAmbi = 0.1f;
+   planeMat.mKSpec = 0.4f;
+   planeMat.mKDiff = 0.5f;
+   //planeMat.mKRefl = 0.4f;
+   planeMat.mMedium = cRayTracer::mGlass;
+   scene->addObject(new cCheckersPlane(Eigen::Vector3f(0, 1, 0), 1, planeMat));
+
+   scene->addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
+      Eigen::Vector3f(10, 1, 7), 17));
+
+   scene->addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
+      Eigen::Vector3f(10, 1, 47), 17));
+
    return scene;
 }

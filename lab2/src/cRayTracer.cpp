@@ -52,6 +52,7 @@ Eigen::Vector3f cRayTracer::shade(const sMaterial::sMedium &curMed, double weigh
    int Entering = 1;
 
    txt = obj->getMaterialAt(p);
+   obj->applyTexture(p, txt);
 
    if ((vn = view.dot(txt.mNormal)) > 0)
    {
@@ -104,9 +105,9 @@ Eigen::Vector3f cRayTracer::shade(const sMaterial::sMedium &curMed, double weigh
       {
          ray.dir = view * Eta + txt.mNormal * (Eta * ci - sqrt(ctSq));
          if (Entering)
-            color += txt.mKRefl * trace(ray, txt.mMedium, tWeight);
+            color += txt.mKTransp * trace(ray, txt.mMedium, tWeight);
          else
-            color += txt.mKRefl * trace(ray, mAir, tWeight);
+            color += txt.mKTransp * trace(ray, mAir, tWeight);
       }
    }
 

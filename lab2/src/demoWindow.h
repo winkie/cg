@@ -21,6 +21,11 @@ private:
    int mPrevMouseX;
    int mPrevMouseY;
    int mMouseDY;
+   enum 
+   {
+      PREVIEW,
+      RAY_TRACER
+   } mState;
 public:
 
    int height, width;

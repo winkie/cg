@@ -15,6 +15,7 @@ public:
 
    static cScene *scene1();
    static cScene *scene2();
+   static cScene *scene3();
 
 private:
    cScene *mScene;

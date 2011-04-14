@@ -56,8 +56,12 @@ DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
 
    //mScene.setBackground(0.3f, 0.3f, 0.3f);
    
+   mState = PREVIEW;
+
    mScenes[0] = cSceneBuilder::scene1();
    mScenes[1] = cSceneBuilder::scene2();
+   mScenes[2] = cSceneBuilder::scene3();
+   //glutSetWindowTitle("Preview");
 }
 
 DemoWindow::~DemoWindow()
@@ -70,6 +74,7 @@ void DemoWindow::CallBackDisplayFunc(void)
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    mRenderer->render(mCamera, *mScenes[mCurScene]);
+   glutSetWindowTitle(mRenderer->titleInfo().c_str());
 
    glutSwapBuffers();
 }
@@ -82,6 +87,7 @@ void DemoWindow::CallBackReshapeFunc(int w, int h)
    if (h == 0)
       h = 1;
 
+   puts("Reshape");
    mRenderer->setupProjection(w, h, fovy);
 
    glutPostRedisplay();
@@ -89,12 +95,6 @@ void DemoWindow::CallBackReshapeFunc(int w, int h)
 
 void DemoWindow::CallBackKeyboardFunc(unsigned char key, int x, int y)
 {
-   if (key >= '1' && key <= '9')
-   {
-      if (mScenes[key - '1'])
-         mCurScene = key - '1';
-   }
-   
    switch (key)
    {
    case 27: //ESC
@@ -104,12 +104,31 @@ void DemoWindow::CallBackKeyboardFunc(unsigned char key, int x, int y)
       switchRenderers();
       return;
    }
+
+   if (mState == RAY_TRACER)
+   {
+      if (key == ' ')
+      {
+         mRayTracingRenderer.changeMode();
+         glutPostRedisplay();
+      }
+      return;
+   }
+
+   if (key >= '1' && key <= '9')
+   {
+      if (mScenes[key - '1'])
+         mCurScene = key - '1';
+   }
    
    keys[key] = true;
 }
 
 void DemoWindow::CallBackIdleFunc(void)
 {
+   if (mState == RAY_TRACER)
+      return;
+
    if (mMouseLeft)
       mCamera.rotate(mMouseDX, mMouseDY);
    mMouseDY = mMouseDX = 0;
@@ -127,6 +146,8 @@ void DemoWindow::CallBackIdleFunc(void)
 
 void DemoWindow::CallBackMouseFunc(int button, int state, int x, int y)
 {
+   if (mState == RAY_TRACER)
+      return;
    if (button == GLUT_LEFT_BUTTON)
    {
       mMouseLeft = (state == GLUT_DOWN);
@@ -149,15 +170,17 @@ void DemoWindow::CallBackPassiveMotionFunc(int x, int y)
 
 void DemoWindow::CallBackKeyboardUpFunc(unsigned char key, int x, int y)
 {
+   if (mState == RAY_TRACER)
+      return;
    keys[key] = false;
 }
 
 void DemoWindow::switchRenderers()
 {
-   if (mRenderer == &mRayTracingRenderer)
-      mRenderer = &mPreviewRenderer;
+   if (mState == RAY_TRACER)
+      mRenderer = &mPreviewRenderer, mState = PREVIEW;
    else
-      mRenderer = &mRayTracingRenderer;
+      mRenderer = &mRayTracingRenderer, mState = RAY_TRACER;
 
    mRenderer->setupProjection(width, height, fovy);
 }
