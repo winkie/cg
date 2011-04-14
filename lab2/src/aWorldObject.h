@@ -13,8 +13,10 @@ protected:
 public:
    sMaterial mDefMaterial;
    aWorldObject() : mPos(0, 0, 0) {};
+   aWorldObject(float x, float y, float z) : mPos(x, y, z) {};
+   aWorldObject(const Eigen::Vector3f &p) : mPos(p) {};
    aWorldObject(const sMaterial &mat,
-                float x, float y, float z) : mPos(x, y, z), mDefMaterial(mat)
+      float x, float y, float z) : mPos(x, y, z), mDefMaterial(mat)
                 {};
    aWorldObject(const sMaterial &mat, const Eigen::Vector3f &p) :
       mPos(p), mDefMaterial(mat) {};

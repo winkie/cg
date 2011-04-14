@@ -11,10 +11,10 @@ class cSphere: public aWorldObject, public iRenderable
 private:
    float mRadius;
 public:
-   cSphere(float radius, const sMaterial &mat) : mRadius(radius),
-      aWorldObject(mat, Eigen::Vector3f(0, 0, 0)) {};
-   cSphere(float radius, const sMaterial &mat,
-      const Eigen::Vector3f &pos) : aWorldObject(mat, pos), mRadius(radius) {};
+   cSphere(float radius, const Eigen::Vector3f &pos): mRadius(radius),
+      aWorldObject(pos) {};
+   cSphere(float radius, const Eigen::Vector3f &pos,
+      const sMaterial &mat) : aWorldObject(mat, pos), mRadius(radius) {};
 
    void render()
    {

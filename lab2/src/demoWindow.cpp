@@ -37,19 +37,55 @@ DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
    glClearDepth(1.0f);
    glColor4f(1.0, 0.0, 0.0, 1.0);
 
-   sMaterial mat(Eigen::Vector3f(1, 0, 0));
-   mat.mKAmbi = 0.2;
-   mat.mKDiff = 0.5;
-   mat.mKSpec = 0.7;
-   mat.mKRefl = 1;
-   //mat.mMedium = cRayTracer::mGlass;
-   mScene.addLight(new cPointLight(Eigen::Vector3f(0, 0, 1),
-         Eigen::Vector3f(-5, 10, 60), 15));
-   mScene.addLight(new cPointLight(Eigen::Vector3f(0, 1, 0),
-         Eigen::Vector3f(5, 10, 60), 15));
+   cSphere *s[16];
+   int i, j, k;
+   for (i = k = 0; i < 4; i++)
+   {
+      for (j = 0; j < 4; j++, k++)
+      {
+         s[k] = new cSphere(0.7f, Eigen::Vector3f(-3 + j * 2,
+            2.15f - i * 1.45, 5));
 
-   mScene.addObject(new cSphere(1.5f, mat,
-         Eigen::Vector3f(0, 0, 50)));
+         if (i > 0)
+            s[k]->mDefMaterial.mKAmbi = 0.2;
+         else
+            s[k]->mDefMaterial.mKAmbi = j * 0.33;
+
+         if (i < 1)
+            s[k]->mDefMaterial.mKDiff = 0;
+         else if (i == 1)
+            s[k]->mDefMaterial.mKDiff = j * 0.33;
+         else
+            s[k]->mDefMaterial.mKDiff = 0.4;
+
+         if (i < 2)
+            s[k]->mDefMaterial.mKSpec = 0;
+         else if (i == 2)
+            s[k]->mDefMaterial.mKSpec = j * 0.33;
+         else
+            s[k]->mDefMaterial.mKSpec = 0.7;
+
+         if (i < 3)
+            s[k]->mDefMaterial.mP = 10;
+         else
+            s[k]->mDefMaterial.mP = 5 + 5 * j;
+
+         s[k]->mDefMaterial.mKTransp = 0;
+         s[k]->mDefMaterial.mKRefl = 0;
+         s[k]->mDefMaterial.mColor = Eigen::Vector3f(0, 1, 0);
+         s[k]->mDefMaterial.mMedium.mRefraction = 1;
+         s[k]->mDefMaterial.mMedium.mBeta = 0;
+         mScene.addObject(s[k]);
+      }
+   }
+
+   mScene.addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
+         Eigen::Vector3f(10, 5, -10), 15));
+   //mScene.addLight(new cPointLight(Eigen::Vector3f(0, 1, 0),
+   //      Eigen::Vector3f(5, 10, 60), 15));
+
+   //mScene.addObject(new cSphere(1.5f, mat,
+   //      Eigen::Vector3f(0, 0, 50)));
    //mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, 0),
    //      Eigen::Vector3f(0, 10, 50)));
    //mScene.addObject(new cSphere(1.5f, Eigen::Vector3f(0, 0, 1),
