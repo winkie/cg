@@ -132,9 +132,16 @@ cScene * cSceneBuilder::scene3()
       scene->addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, i * 7.0f + 5), sphereMat));
    }
 
+   sphereMat.mColor = Eigen::Vector3f(1, 0, 0);
+   scene->addObject(new cSphere(1.5f, Eigen::Vector3f(10, 2, 2), sphereMat));
+   sphereMat.mColor = Eigen::Vector3f(0, 1, 0);
+   scene->addObject(new cSphere(1.5f, Eigen::Vector3f(10, 2, 22), sphereMat));
+   sphereMat.mColor = Eigen::Vector3f(0, 0, 1);
+   scene->addObject(new cSphere(1.5f, Eigen::Vector3f(10, 2, 40), sphereMat));
+
    sMaterial planeMat;
-   planeMat.mKAmbi = 0.1f;
-   planeMat.mKSpec = 0.4f;
+   planeMat.mKAmbi = 0.3f;
+   planeMat.mKSpec = 0.05f;
    planeMat.mKDiff = 0.5f;
    //planeMat.mKRefl = 0.4f;
    planeMat.mColor = Eigen::Vector3f(0.3f, 0.7f, 0.2f);
@@ -142,7 +149,7 @@ cScene * cSceneBuilder::scene3()
    scene->addObject(new cCheckersPlane(Eigen::Vector3f(0, 1, 0), 1, planeMat));
 
    planeMat.mColor = Eigen::Vector3f(0.5f, 0.1f, 0.4f);
-   scene->addObject(new cCheckersPlane(Eigen::Vector3f(0, 0, -1), 300, planeMat));
+   scene->addObject(new cCheckersPlane(Eigen::Vector3f(0, 0, -1), 50, planeMat));
 
    scene->addLight(new cPointLight(Eigen::Vector3f(1, 1, 1),
       Eigen::Vector3f(10, 1, 7), 17));

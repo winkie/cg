@@ -16,9 +16,10 @@ static float Random(float l = 0, float r = 1)
 
 cRayTracingRenderer::cRayTracingRenderer()
 {
-   mMode = SIMPLE;
+   mMode = DOF;
    mApertureSize = 0.5f;
-   mFocalLength = 30.0f;
+   mFocalLength = 20.0f;
+   float mLensDistance = 10.0f;
    puts("Cons");
    mReRender = true;
 }
@@ -100,7 +101,7 @@ void cRayTracingRenderer::traceRaysDoF(const cFreeCamera &camera, const cScene &
    mReRender = false;
    calcVectors(camera);
 
-   const int Ny = 7, Nx = 7;
+   const int Ny = 8, Nx = 8;
    const float dW = 1.0f / Nx, dH = 1.0f / Ny;
    const float dWA = mApertureSize / Nx, dHA = mApertureSize / Ny;
 
@@ -121,7 +122,7 @@ void cRayTracingRenderer::traceRaysDoF(const cFreeCamera &camera, const cScene &
          float len2 = len * (1 + mFocalLength / mDist);
 
          g = p * len;
-
+         int count = Nx * Ny;
          for (int l = 0; l < Ny; ++l)
          {
             for (int k = 0; k < Nx; ++k)
@@ -129,13 +130,18 @@ void cRayTracingRenderer::traceRaysDoF(const cFreeCamera &camera, const cScene &
                Eigen::Vector3f a = -
                   (Random(k * dWA, (k + 1) * dWA) - mApertureSize * 0.5f) * Vx +
                   (Random(l * dHA, (l + 1) * dHA) - mApertureSize * 0.5f) * Vy;
+               if (a.norm() > mApertureSize)
+               {
+                  count--;
+                  continue;
+               }
                ray.orig = mEye + a;
                ray.dir = (p * len2 - (g + a)).normalized();
 
                color += mRayTracer.trace(ray, cRayTracer::mAir, 1);
             }
          }
-         mBuffer[j * mWidth + i] = color / (Nx * Ny);
+         mBuffer[j * mWidth + i] = color / count;
       }
    }
 }

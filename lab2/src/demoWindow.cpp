@@ -10,7 +10,8 @@
 const static float fovy = (float)M_PI_4;
 
 DemoWindow::DemoWindow(GlutMaster *glutMaster, int setWidth, int setHeight,
-                       int setInitPositionX, int setInitPositionY, const char *title)
+                       int setInitPositionX, int setInitPositionY,
+                       const char *title)
 {
    mCurScene = 0;
    memset(mScenes, 0, 9 * sizeof(cScene*));
@@ -81,6 +82,9 @@ void DemoWindow::CallBackDisplayFunc(void)
 
 void DemoWindow::CallBackReshapeFunc(int w, int h)
 {
+   if (w == width && h == height)
+      return;
+
    width = w;
    height = h;
 
