@@ -16,7 +16,7 @@ static float Random(float l = 0, float r = 1)
 
 cRayTracingRenderer::cRayTracingRenderer()
 {
-   mMode = DOF;
+   mMode = SIMPLE;
    mApertureSize = 0.5f;
    mFocalLength = 30.0f;
    puts("Cons");

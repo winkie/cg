@@ -129,7 +129,7 @@ cScene * cSceneBuilder::scene3()
    for (int i = 0; i < 10; i++)
    {
       sphereMat.mColor = Eigen::Vector3f(i * 0.1f, i * 0.03f + 0.3f, i * 0.04f + 0.5f);
-      scene->addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, i * 7 + 5), sphereMat));
+      scene->addObject(new cSphere(1.5f, Eigen::Vector3f(0, 1, i * 7.0f + 5), sphereMat));
    }
 
    sMaterial planeMat;

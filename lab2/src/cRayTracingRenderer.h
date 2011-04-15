@@ -49,6 +49,7 @@ public:
 
    virtual ~cRayTracingRenderer();
    bool mReRender;
+   std::vector<Eigen::Vector3f> mBuffer;
 private:
    int mWidth, mHeight;
    float mFOVy;
@@ -70,5 +71,4 @@ private:
    void traceRaysSimple(const cFreeCamera &camera, const cScene &scene);
    void traceRaysDoF(const cFreeCamera &camera, const cScene &scene);
    void traceRaysDistributed(const cFreeCamera &camera, const cScene &scene);
-   std::vector<Eigen::Vector3f> mBuffer;
 };

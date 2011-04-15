@@ -6,14 +6,17 @@ solution "lab2"
       kind "ConsoleApp"
       language "C++"
       platforms {"x32"}
-      files {"src/*.h", "src/*.cpp"}
-      includedirs {"."}
+      files {"src/*.h", "src/*.cpp", "libpng/*.c"}
+      includedirs {".", "./pngpp"}
 
       configuration "linux"
          links {"glut"}
 
       configuration "windows"
          includedirs {"./glut"}
+         defines {"_CRT_SECURE_NO_DEPRECATE"}
+         buildoptions {"/wd4355"}
+         linkoptions {"/NODEFAULTLIB:LIBCMT"}
          links {"freeglut_static"}
          libdirs {"./glut"}
       

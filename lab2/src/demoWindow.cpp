@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <png.hpp>
 
 #include "demoWindow.h"
 #include "cSphere.h"
@@ -111,6 +112,20 @@ void DemoWindow::CallBackKeyboardFunc(unsigned char key, int x, int y)
          mRayTracingRenderer.changeMode();
          glutSetWindowTitle(mRenderer->titleInfo().c_str());
          glutPostRedisplay();
+      }
+      else if (key == 'p')
+      {
+         png::image<png::rgb_pixel> img(width, height);
+         for (int y = 0; y < height; ++y)
+            for (int x = 0; x < width; ++x)
+            {
+               Eigen::Vector3f c = 255 * mRayTracingRenderer.mBuffer[(height - 1 - y) * width + x];
+               if (c(0) > 255) c(0) = 255; if (c(0) < 0) c(0) = 0;
+               if (c(1) > 255) c(1) = 255; if (c(1) < 0) c(1) = 0;
+               if (c(2) > 255) c(2) = 255; if (c(2) < 0) c(2) = 0;
+               img[y][x] = png::rgb_pixel((png::byte)c(0), (png::byte)c(1), (png::byte)c(2));
+            }
+         img.write("screenshot.png");
       }
       return;
    }
